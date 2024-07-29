@@ -1,13 +1,20 @@
 export const typeDefs = `#graphql
 
   type Repository {
-    repositoryName: String
-    repositorySize: Int
-    repositoryOwner: String
+    name: String
+    size: Int
+    owner: String
   }
+  type RepositoryAdvance {
+    name: String
+    size: Int
+    owner: String
+    publicStatus: Boolean
+    numberOfFiles: Int
+    yamlContent: String}
 
   type Query {
     repositories: [Repository]
-    repositorie(repositoryName: String): Repository
+    repositorie(name: String): RepositoryAdvance
   }
 `;
