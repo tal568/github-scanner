@@ -5,7 +5,7 @@ const octokit = new Octokit({
   auth: process.env.GITHUB_TOKEN,
 });
 
-export async function getRepoDetails(owner, repo) {
+export async function getRepositoryBaseData(owner, repo) {
   try {
     const { data: repoData } = await octokit.repos.get({
       owner,
@@ -72,8 +72,25 @@ export async function getRepoWebhooks(owner, repo) {
     throw error;
   }
 }
+export async function getNumberOfFiles(owner, repo, path = "") {
+  const { data } = await octokit.repos.getContent({
+    owner,
+    repo,
+    path,
+  });
 
-// if main
-if (process.argv[2] === "main") {
-  getRepoInfo("tal568", "repoB");
+  let count = 0;
+  for (const file of data) {
+    if (file.type === "file") {
+      count++;
+    } else if (file.type === "dir") {
+      count += await getNumberOfFiles(owner, repo, file.path);
+    }
+  }
+  return count;
 }
+
+// getRepoFileCount("tal568", "repoB");
+//getRepoDetails("tal568", "test");
+
+//getNumberOfFiles("tal568", "test");
