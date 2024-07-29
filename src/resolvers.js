@@ -1,6 +1,6 @@
 import {
-  fetchRepositoryAdvanceDetails,
-  getRepositoriesDetailsParallel,
+  retriveRepositoryExtendedFields,
+  retriveRepositoriesBaseFieldsInParallel,
 } from "./retriveGithubData.js";
 // const repos = [
 //    {owner:"tal568", repo:"repoA"},
@@ -9,8 +9,8 @@ import {
 // ] used from env
 export const resolvers = {
   Query: {
-    repositories: async () => await getRepositoriesDetailsParallel(),
+    repositories: async () => await retriveRepositoriesBaseFieldsInParallel(),
     repository: async (_, { name, owner }) =>
-      fetchRepositoryAdvanceDetails(name, owner),
+      retriveRepositoryExtendedFields(name, owner),
   },
 };
