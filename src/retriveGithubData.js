@@ -1,3 +1,4 @@
+import pLimit from "p-limit";
 import {
   getRepoDetails,
   getRepoContents,
@@ -10,13 +11,13 @@ export async function getRepositoriesDetailsParallel() {
   const limit = pLimit(2);
   const repositories = JSON.parse(process.env.REPOSITORIES);
   let promises = repositories.map((repo) => {
-    return limit(() => fetchGithubRepositoriesData(repo.owner, repo.name));
+    return limit(() => fetchGithubRepositoriesData(repo.name, repo.owner));
   });
 
   const result = await Promise.all(promises);
   return result;
 }
-async function fetchGithubRepositoriesData(name) {
+async function fetchGithubRepositoriesData(name, owner) {
   let repoData = {};
   try {
     repoData = await getRepoDetails(owner, name);
