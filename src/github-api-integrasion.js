@@ -1,7 +1,6 @@
 import { Octokit } from "@octokit/rest";
 import dotenv from 'dotenv';
-
-dotenv.config();
+dotenv.config()
 const octokit = new Octokit({ 
   auth: process.env.GIT_HUB_TOKEN
 
@@ -16,6 +15,7 @@ export async function getRepoDetails(owner, repo) {
     return repoData;
   } catch (error) {
     console.error(`Error fetching repository details: ${error.message}`);
+    throw error;
   }
 }
 
@@ -29,6 +29,7 @@ export async function getRepoContents(owner, repo) {
     return contents;
   } catch (error) {
     console.error(`Error fetching repository contents: ${error.message}`);
+    throw error
   }
 }
 export async function searchYamlFiles(owner, repo) {
@@ -48,6 +49,7 @@ export async function getYmlFileContent(owner, repo, ymlFilePath) {
     return Buffer.from(ymlFileData.content, 'base64').toString('utf-8');
   } catch (error) {
     console.error(`Error fetching YAML file content: ${error.message}`);
+    throw error
   }
 }
 
@@ -60,6 +62,7 @@ export async function getRepoWebhooks(owner, repo) {
     return webhooks.filter(webhook =>webhook.active==true).map(webhook => webhook.config.url);
   } catch (error) {
     console.error(`Error fetching repository webhooks: ${error.message}`);
+    throw error
   }
 }
 
