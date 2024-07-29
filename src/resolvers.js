@@ -1,4 +1,4 @@
-import { getRepoInfo} from './github-api-integrasion.js'
+import { getRepoDetails ,getRepoContents,searchYamlFiles,getYmlFileContent,getRepoWebhooks} from './github-api-integrasion.js'
 import pLimit from 'p-limit';
 
 export const  resolvers = {
@@ -19,7 +19,7 @@ export const  resolvers = {
     ]
     
     let promises = repos.map(repo => {
-        return limit(() => getRepoInfo(repo.owner, repo.repo,false));
+        return limit(() => fetchGithubRepostorysData(repo.owner, repo.repo,false));
     });
     
       const result =  await Promise.all(promises);
@@ -28,5 +28,25 @@ export const  resolvers = {
     console.log(formattedResult)
     return formattedResult
   }
-        
+  async function fetchGithubRepostorysData(owner, repo,extentd=false) {
+    const repoData = await getRepoDetails(owner, repo);
+      return repoData;
+   
+    }
+  async function getRepoAdvanceDetails(owner, repo) {
+    const repoData = await getRepoDetails(owner, repo);
+    const contents = await getRepoContents(owner, repo);
 
+    //todo fix  yml dont work for repo a and c
+     const ymlFiles=await searchYamlFiles(owner, repo);
+ 
+     let ymlContent = '';
+ 
+     if (ymlFiles.length > 0) {
+       ymlContent = await getYmlFileContent(owner, repo, ymlFiles[0]);
+     }
+ 
+     const webhooks = await getRepoWebhooks(owner, repo);
+     return { repoData, contents, ymlContent, webhooks };
+    
+  }
