@@ -31,13 +31,15 @@ export async function getRepoContents(owner, repo) {
     throw error;
   }
 }
-export async function searchYamlFiles(owner, repo) {
-  const query = `repo:${owner}/${repo} extension:yml`;
-
+export async function searchYmlFilePath(owner, repo) {
   try {
-    const response = await octokit.search.code({ q: query });
-    const files = response.data.items.map((item) => item.path);
-    return files;
+    const response = await octokit.git.getTree({
+      owner,
+      repo,
+      tree_sha: "master",
+      recursive: true,
+    });
+    return response.data.tree.find((file) => file.path.endsWith(".yml"))?.path;
   } catch (error) {
     console.error(`Error searching YAML files: ${error.message}`);
     throw error;
@@ -86,4 +88,3 @@ export async function getNumberOfFiles(owner, repo) {
     throw error;
   }
 }
-getNumberOfFiles("tal568", "repoA").then((data) => console.log(data));
