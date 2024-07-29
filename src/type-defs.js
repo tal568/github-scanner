@@ -11,10 +11,12 @@ export const typeDefs = `#graphql
     owner: String
     publicStatus: Boolean
     numberOfFiles: Int
-    yamlContent: String}
+    yamlContent: String
+    webhooks: [String]
+    }
 
   type Query {
     repositories: [Repository]
-    repositorie(name: String): RepositoryAdvance
+    repository(name: String): RepositoryAdvance
   }
 `;

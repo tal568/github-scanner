@@ -4,7 +4,7 @@ import {
   searchYamlFiles,
   getYmlFileContent,
   getRepoWebhooks,
-} from "./github-api-integrasion.js";
+} from "./github-api-integration.js";
 import pLimit from "p-limit";
 // const repos = [
 //    {owner:"tal568", repo:"repoA"},
@@ -14,7 +14,7 @@ import pLimit from "p-limit";
 export const resolvers = {
   Query: {
     repositories: async () => await getRepositoriesDetails(),
-    repositorie: async (_, { name }) =>
+    repository: async (_, { name }) =>
       fetchRepositoryAdvanceDetails(name),
   },
 };
@@ -24,14 +24,14 @@ async function getRepositoriesDetails() {
   const repositories = JSON.parse(process.env.REPOSITORIES);
   let promises = repositories.map((repo) => {
     return limit(() =>
-      fetchGithubRepositoriessData(repo.owner, repo.name, false),
+      fetchGithubRepositoriesData(repo.owner, repo.name, false),
     );
   });
 
   const result = await Promise.all(promises);
   return result;
 }
-async function fetchGithubRepositoriessData(owner, name) {
+async function fetchGithubRepositoriesData(owner, name) {
   let repoData = {};
   try {
     repoData = await getRepoDetails(owner, name);

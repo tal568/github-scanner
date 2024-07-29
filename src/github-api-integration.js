@@ -2,7 +2,7 @@ import { Octokit } from "@octokit/rest";
 import dotenv from 'dotenv';
 dotenv.config()
 const octokit = new Octokit({ 
-  auth: process.env.GIT_HUB_TOKEN
+  auth: process.env.GITHUB_TOKEN
 
 });
 
@@ -34,9 +34,18 @@ export async function getRepoContents(owner, repo) {
 }
 export async function searchYamlFiles(owner, repo) {
   const query = `repo:${owner}/${repo} extension:yml`;
-  const response = await octokit.search.code({q: query});
-  const files = response.data.items.map(item => item.path);
-  return files;
+
+  try {
+    const response = await octokit.search.code({q: query});
+    const files = response.data.items.map(item => item.path);
+    return files;
+  }
+  catch (error) {
+    console.error(`Error searching YAML files: ${error.message}`);
+    throw error
+  }
+  
+ 
 }
 
 export async function getYmlFileContent(owner, repo, ymlFilePath) {
