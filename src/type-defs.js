@@ -17,6 +17,6 @@ export const typeDefs = `#graphql
 
   type Query {
     repositories: [Repository]
-    repository(name: String): RepositoryAdvance
+    repository(name: String, owner: String): RepositoryAdvance
   }
 `;
