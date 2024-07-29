@@ -25,5 +25,5 @@ to start project run
 npm run start
 ```
 
-the client repo is on
+the client is in the repo:
 [github](https://github.com/tal568/github-scanner-front.git)
