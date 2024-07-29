@@ -4,7 +4,6 @@ import { typeDefs } from "./type-defs.js";
 import { resolvers } from "./resolvers.js";
 import dotenv from "dotenv";
 
-
 dotenv.config();
 
 const server = new ApolloServer({

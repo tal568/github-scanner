@@ -10,6 +10,7 @@ before you run the code add the env variables
 
 1. GITHUB_TOKEN
 2. REPOSITORIES:
+
 ```console
 
 '[{"owner":"tal568", "name":"repoA"},
@@ -23,5 +24,6 @@ to start project run
 ```console
 npm run start
 ```
-the client repo is on 
+
+the client repo is on
 [github](https://github.com/tal568/github-scanner-front.git)

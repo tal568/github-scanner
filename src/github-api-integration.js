@@ -1,16 +1,15 @@
 import { Octokit } from "@octokit/rest";
-import dotenv from 'dotenv';
-dotenv.config()
-const octokit = new Octokit({ 
-  auth: process.env.GITHUB_TOKEN
-
+import dotenv from "dotenv";
+dotenv.config();
+const octokit = new Octokit({
+  auth: process.env.GITHUB_TOKEN,
 });
 
 export async function getRepoDetails(owner, repo) {
   try {
     const { data: repoData } = await octokit.repos.get({
       owner,
-      repo
+      repo,
     });
     return repoData;
   } catch (error) {
@@ -24,28 +23,25 @@ export async function getRepoContents(owner, repo) {
     const { data: contents } = await octokit.repos.getContent({
       owner,
       repo,
-      path: '',
+      path: "",
     });
     return contents;
   } catch (error) {
     console.error(`Error fetching repository contents: ${error.message}`);
-    throw error
+    throw error;
   }
 }
 export async function searchYamlFiles(owner, repo) {
   const query = `repo:${owner}/${repo} extension:yml`;
 
   try {
-    const response = await octokit.search.code({q: query});
-    const files = response.data.items.map(item => item.path);
+    const response = await octokit.search.code({ q: query });
+    const files = response.data.items.map((item) => item.path);
     return files;
-  }
-  catch (error) {
+  } catch (error) {
     console.error(`Error searching YAML files: ${error.message}`);
-    throw error
+    throw error;
   }
-  
- 
 }
 
 export async function getYmlFileContent(owner, repo, ymlFilePath) {
@@ -53,12 +49,12 @@ export async function getYmlFileContent(owner, repo, ymlFilePath) {
     const { data: ymlFileData } = await octokit.repos.getContent({
       owner,
       repo,
-      path: ymlFilePath
+      path: ymlFilePath,
     });
-    return Buffer.from(ymlFileData.content, 'base64').toString('utf-8');
+    return Buffer.from(ymlFileData.content, "base64").toString("utf-8");
   } catch (error) {
     console.error(`Error fetching YAML file content: ${error.message}`);
-    throw error
+    throw error;
   }
 }
 
@@ -66,20 +62,18 @@ export async function getRepoWebhooks(owner, repo) {
   try {
     const { data: webhooks } = await octokit.repos.listWebhooks({
       owner,
-      repo
+      repo,
     });
-    return webhooks.filter(webhook =>webhook.active==true).map(webhook => webhook.config.url);
+    return webhooks
+      .filter((webhook) => webhook.active == true)
+      .map((webhook) => webhook.config.url);
   } catch (error) {
     console.error(`Error fetching repository webhooks: ${error.message}`);
-    throw error
+    throw error;
   }
 }
 
-
-
-
-
 // if main
 if (process.argv[2] === "main") {
-  getRepoInfo("tal568", "repoB");}
-
+  getRepoInfo("tal568", "repoB");
+}
