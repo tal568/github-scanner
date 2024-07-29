@@ -72,25 +72,18 @@ export async function getRepoWebhooks(owner, repo) {
     throw error;
   }
 }
-export async function getNumberOfFiles(owner, repo, path = "") {
-  const { data } = await octokit.repos.getContent({
-    owner,
-    repo,
-    path,
-  });
-
-  let count = 0;
-  for (const file of data) {
-    if (file.type === "file") {
-      count++;
-    } else if (file.type === "dir") {
-      count += await getNumberOfFiles(owner, repo, file.path);
-    }
+export async function getNumberOfFiles(owner, repo) {
+  try {
+    const { data: files } = await octokit.git.getTree({
+      owner,
+      repo,
+      tree_sha: "master",
+      recursive: "true",
+    });
+    return files.tree.filter((file) => file.type == "blob").length;
+  } catch (error) {
+    console.error(`Error fetching number of files: ${error.message}`);
+    throw error;
   }
-  return count;
 }
-
-// getRepoFileCount("tal568", "repoB");
-//getRepoDetails("tal568", "test");
-
-//getNumberOfFiles("tal568", "test");
+getNumberOfFiles("tal568", "repoA").then((data) => console.log(data));

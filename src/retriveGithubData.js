@@ -1,7 +1,6 @@
 import pLimit from "p-limit";
 import {
   getRepositoryBaseData,
-  getRepoContents,
   searchYamlFiles,
   getYmlFileContent,
   getRepoWebhooks,
@@ -46,10 +45,13 @@ export async function retriveRepositoryExtendedFields(name, owner) {
   if (!currentRepo) {
     throw new Error(`Repository ${name} not found with owner ${owner}`);
   }
-  const { size, isprivate } = await getRepositoryBaseData(owner, name);
-  const contents = await getRepoContents(owner, name);
-  const ymlFiles = await searchYamlFiles(owner, name);
-  const numberOfFiles = await getNumberOfFiles(owner, name);
+
+  const [repoData, ymlFiles, numberOfFiles] = await Promise.all([
+    getRepositoryBaseData(owner, name),
+    searchYamlFiles(owner, name),
+    getNumberOfFiles(owner, name),
+  ]);
+
   let ymlContent = "";
 
   if (ymlFiles.length > 0) {
@@ -57,10 +59,10 @@ export async function retriveRepositoryExtendedFields(name, owner) {
   }
   const webhooks = await getRepoWebhooks(owner, name);
   return {
-    name: name,
-    size: size,
-    owner: owner.login,
-    publicStatus: isprivate,
+    name: repoData.name,
+    size: repoData.size,
+    owner: repoData.owner.login,
+    publicStatus: repoData.isprivate,
     numberOfFiles: numberOfFiles,
     yamlContent: ymlContent,
     webhooks: webhooks,
